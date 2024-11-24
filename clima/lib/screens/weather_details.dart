@@ -53,7 +53,7 @@ class WeatherDetails extends StatelessWidget {
         _buildDetailItem(
           icon: Icons.nightlight_round,
           label: "Sunset Time",
-          value: 'N/A' ?? 'N/A',
+          value: 'N/A',
         ),
       ],
     );
