@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
         windSpeed = weather['wind']['speed'];
         time = weather['time'];
         humidity = weather['main']['humidity'];
-        aqi = weather['aqi'];  // AQI value
+        aqi = weather['aqi']; // AQI value
         uvIndex = weather['uv_index']; // UV Index value
         sunsetTime = weather['sunset'];
 
@@ -97,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
         windSpeed = weather['wind']['speed'];
         time = weather['time'];
         humidity = weather['main']['humidity'];
-        aqi = weather['aqi'];  // AQI value
+        aqi = weather['aqi']; // AQI value
         uvIndex = weather['uv_index']; // UV Index value
         sunsetTime = weather['sunset'];
 
@@ -124,7 +124,10 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text(
           "Clima",
           style: TextStyle(
-              color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold),
+            color: Colors.white,
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -147,127 +150,142 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          // Weather Information
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 130.0),
-                    child: TextField(
-                      controller: _controller,
-                      decoration: InputDecoration(
-                        hintText: 'Enter city name...',
-                        hintStyle: const TextStyle(color: Colors.black54),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(50.0),
-                          borderSide: const BorderSide(color: Colors.white),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 15.0, horizontal: 20.0),
-                        suffixIcon: Container(
-                          height: 53.0,
-                          width: 53.0,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFd864ff),
-                            shape: BoxShape.circle,
+          // Content or Progress Bar
+          Center(
+            child: isLoading
+                ? const SpinKitThreeBounce(
+                    color: Colors.white,
+                    size: 30.0,
+                  )
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Search Bar
+                          Padding(
+                            padding: const EdgeInsets.only(top: 40.0),
+                            child: TextField(
+                              controller: _controller,
+                              decoration: InputDecoration(
+                                hintText: 'Enter city name...',
+                                hintStyle:
+                                    const TextStyle(color: Colors.black54),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(50.0),
+                                  borderSide:
+                                      const BorderSide(color: Colors.white),
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 15.0,
+                                  horizontal: 20.0,
+                                ),
+                                suffixIcon: Container(
+                                  height: 53.0,
+                                  width: 53.0,
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xFFd864ff),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.search,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        cityName = _controller.text;
+                                        FocusScope.of(context).unfocus();
+                                      });
+                                      fetchWeatherByCity();
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                          child: IconButton(
-                            icon: const Icon(Icons.search, color: Colors.white),
-                            onPressed: () {
-                              setState(() {
-                                cityName = _controller.text;
-                                FocusScope.of(context).unfocus();
-                              });
-                              fetchWeatherByCity();
-                            },
-                          ),
-                        ),
+
+                          const SizedBox(height: 30.0),
+
+                          // Weather Information
+                          temperature != null
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      capitalizeCityName(
+                                          cityName ?? 'City Name'),
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontSize: 36,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 15.0),
+                                    Icon(
+                                      weatherIcon,
+                                      size: 175,
+                                      color: Colors.white,
+                                    ),
+                                    const SizedBox(height: 15.0),
+                                    Text(
+                                      '$temperature°C',
+                                      style: const TextStyle(
+                                        fontSize: 40,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    Text(
+                                      description ?? '',
+                                      style: const TextStyle(
+                                        fontSize: 22,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20.0),
+
+                                    // Suggestion Message
+                                    Container(
+                                      padding: const EdgeInsets.all(10.0),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(0.2),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ),
+                                      child: Text(
+                                        suggestionMessage,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 30.0),
+
+                                    // Weather Details
+                                    WeatherDetails(
+                                      windSpeed: windSpeed ?? 0.0,
+                                      humidity: humidity ?? 0,
+                                      aqi: aqi ?? 0.0,
+                                      uvIndex: uvIndex ?? 0.0,
+                                      sunsetTime: sunsetTime ?? '',
+                                    ),
+                                  ],
+                                )
+                              : const Text(
+                                  'No weather data available.',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                        ],
                       ),
                     ),
                   ),
-                  // Display progressive dots or weather data
-                  isLoading
-                      ? const Center(
-                          child: SpinKitThreeBounce(
-                            color: Colors.white,
-                            size: 30.0,
-                          ),
-                        )
-                      : temperature != null
-                          ? Column(
-                              children: [
-                                const SizedBox(height: 30.0),
-                                Text(
-                                  capitalizeCityName(cityName ??
-                                      'City Name'), // Capitalize city name
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                      fontSize: 36,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                const SizedBox(
-                                  height: 15.0,
-                                ),
-                                Icon(
-                                  weatherIcon,
-                                  size: 175,
-                                  color: Colors.white,
-                                ),
-                                const SizedBox(height: 15.0),
-                                Text(
-                                  '$temperature°C',
-                                  style: const TextStyle(
-                                      fontSize: 40,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  description ?? '',
-                                  style: const TextStyle(
-                                    fontSize: 22,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(height: 20.0),
-                                // Suggestion message
-                                Container(
-                                  padding: const EdgeInsets.all(10.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  child: Text(
-                                    suggestionMessage,
-                                    style: const TextStyle(
-                                        fontSize: 18, color: Colors.white),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-
-                                // Weather details (wind, humidity, etc.)
-                                const SizedBox(height: 30.0),
-                                WeatherDetails(
-                                  windSpeed: windSpeed ?? 0.0,
-                                  humidity: humidity ?? 0,
-                                  aqi: aqi ?? 0.0,
-                                  uvIndex: uvIndex ?? 0.0,
-                                  sunsetTime: sunsetTime ?? '',
-                                ),
-                              ],
-                            )
-                          : const Text(
-                              'No weather data available.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                ],
-              ),
-            ),
           ),
         ],
       ),
