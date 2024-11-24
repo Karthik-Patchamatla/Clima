@@ -133,6 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 0,
       ),
       extendBodyBehindAppBar: true,
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           // Gradient Background
