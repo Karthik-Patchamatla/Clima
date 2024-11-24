@@ -1,18 +1,21 @@
-import 'package:clima/Pages/homepage.dart';
+import 'package:clima/screens/home_screen.dart'; 
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ClimaApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ClimaApp extends StatelessWidget {
+  const ClimaApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomePage(),
+    return MaterialApp(
+      title: 'Clima Weather App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: HomeScreen(),
     );
   }
 }
